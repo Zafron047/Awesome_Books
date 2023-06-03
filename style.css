@@ -1,0 +1,15 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.booklist {
+  display: flex;
+
+  /* gap: 10px; */
+}
+
+.remove {
+  padding: 0.25%;
+}
