@@ -1,58 +1,72 @@
-let importedArray = JSON.parse(localStorage.getItem('exportedArray')) || [];
-// Value imported to JavaScript array.
+class BookManager {
+  constructor() {
+    this.importedArray = JSON.parse(localStorage.getItem('exportedArray')) || [];
+    this.titleInput = document.querySelector('#Title');
+    this.authorInput = document.querySelector('#Author');
+    this.addBookBtn = document.querySelector('#addBookBtn');
+    this.removeBtn = document.querySelector('#removeBtn');
+    this.bookList = document.querySelector('#bookList');
 
-function addBookToArr() {
-  let titleInput = document.querySelector('#Title').value;
-  let authorInput = document.querySelector('#Author').value;
-
-  if (titleInput && authorInput) {
-    importedArray.push({
-      title: titleInput,
-      author: authorInput
+    this.addBookBtn.addEventListener('click', (event) => {
+      event.preventDefault();
+      this.addBookToArr();
+      this.showRemoveBook();
     });
-    localStorage.setItem('exportedArray', JSON.stringify(importedArray));
-    // Method: Key Value pair pushed into the array and localStorage
+
+    this.removeBtn.addEventListener('click', () => {
+      this.removeBook();
+    });
   }
-};
 
-let addBook = document.querySelector('#addBookBtn');
-addBook.addEventListener('click', function (event) {
-  event.preventDefault();
-  addBookToArr();
-  showRemoveBook();
-});
+  addBookToArr() {
+    const titleInputValue = this.titleInput.value;
+    const authorInputValue = this.authorInput.value;
 
-let remove = document.querySelector('#removeBtn');
-function removeBook(index) {
-  importedArray = importedArray.filter((book, i) => i !== index);
-  localStorage.setItem('exportedArray', JSON.stringify(importedArray));
-  showRemoveBook();
-};
+    if (titleInputValue && authorInputValue) {
+      this.importedArray.push({
+        title: titleInputValue,
+        author: authorInputValue
+      });
 
-//--------------------------------------------------------------------
+      localStorage.setItem('exportedArray', JSON.stringify(this.importedArray));
+    }
+  }
 
-function showRemoveBook() {
-  let bookList = document.querySelector('#bookList');
-  bookList.innerHTML = ``;
+  removeBook() {
+    this.importedArray = this.importedArray.filter((book, index) => index !== 0);
+    localStorage.setItem('exportedArray', JSON.stringify(this.importedArray));
+    this.showRemoveBook();
+  }
 
-  importedArray.forEach((book, index) => {
-    let newBook = document.createElement('div');
-    let bookTitle = document.createElement('p');
-    bookTitle.innerText = `${book.title} Author:`;
-    let bookAuthor = document.createElement('p');
-    bookAuthor.innerText = `${book.author}`;
-    let removeBtn = document.createElement('button');
-    removeBtn.id = 'remove';
-    let hrElement = document.createElement('hr');
-    removeBtn.innerText = 'Remove';
-    newBook.appendChild(bookTitle);
-    newBook.appendChild(bookAuthor);
-    newBook.appendChild(removeBtn);
-    newBook.appendChild(hrElement);
-    bookList.appendChild(newBook);
+  showRemoveBook() {
+    this.bookList.innerHTML = '';
 
-    removeBtn.addEventListener('click', () => removeBook(index));
-  });
-};
+    this.importedArray.forEach((book, index) => {
+      const newBook = document.createElement('div');
+      const bookTitle = document.createElement('p');
+      bookTitle.innerText = `${book.title} Author:`;
+      const bookAuthor = document.createElement('p');
+      bookAuthor.innerText = `${book.author}`;
+      const removeBtn = document.createElement('button');
+      removeBtn.id = 'remove';
+      const hrElement = document.createElement('hr');
+      removeBtn.innerText = 'Remove';
+      newBook.appendChild(bookTitle);
+      newBook.appendChild(bookAuthor);
+      newBook.appendChild(removeBtn);
+      newBook.appendChild(hrElement);
+      this.bookList.appendChild(newBook);
 
-// console.log('this is array', importedArray);
+      removeBtn.addEventListener('click', () => this.removeBook(index));
+    });
+
+    this.clearForm();
+  }
+
+  clearForm() {
+    this.titleInput.value = '';
+    this.authorInput.value = '';
+  }
+}
+
+const bookManager = new BookManager();
